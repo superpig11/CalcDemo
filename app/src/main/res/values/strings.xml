@@ -16,8 +16,8 @@
     <string name="btn_9">9</string>
     <string name="btn_plus">+</string>
     <string name="btn_minus">-</string>
-    <string name="btn_time">×</string>
-    <string name="btn_divide">÷</string>
+    <string name="btn_time">*</string>
+    <string name="btn_divide">/</string>
     <string name="btn_del">DEL</string>
     <string name="btn_equal">=</string>
     <string name="btn_dot">.</string>

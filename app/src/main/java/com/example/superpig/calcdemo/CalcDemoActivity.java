@@ -32,6 +32,7 @@ public class CalcDemoActivity extends Activity implements View.OnClickListener{
     Button btn_del;
     Button btn_c;
     EditText et_input;
+    boolean clear_flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class CalcDemoActivity extends Activity implements View.OnClickListener{
         btn_c = (Button) findViewById(R.id.btn_C);
         et_input = (EditText) findViewById(R.id.Calc_input);
 
+
         btn_0.setOnClickListener(this);
         btn_1.setOnClickListener(this);
         btn_2.setOnClickListener(this);
@@ -68,6 +70,14 @@ public class CalcDemoActivity extends Activity implements View.OnClickListener{
         btn_7.setOnClickListener(this);
         btn_8.setOnClickListener(this);
         btn_9.setOnClickListener(this);
+        btn_equal.setOnClickListener(this);
+        btn_del.setOnClickListener(this);
+        btn_divide.setOnClickListener(this);
+        btn_dot.setOnClickListener(this);
+        btn_plus.setOnClickListener(this);
+        btn_time.setOnClickListener(this);
+        btn_c.setOnClickListener(this);
+        btn_minus.setOnClickListener(this);
     }
 
     @Override
@@ -85,12 +95,115 @@ public class CalcDemoActivity extends Activity implements View.OnClickListener{
             case R.id.btn_7:
             case R.id.btn_8:
             case R.id.btn_9:
+            case R.id.btn_dot:
+                if (clear_flag){
+                    clear_flag = false;
+                    str = "";
+                    et_input.setText("");
+                }
                 et_input.setText(str + ((Button) v).getText());
                 break;
+            case R.id.btn_plus:
+            case R.id.btn_divide:
+            case R.id.btn_time:
+            case R.id.btn_minus:
+                if (clear_flag){
+                    clear_flag = false;
+                    str = "";
+                    et_input.setText("");
+                }
+                et_input.setText(str + " " + ((Button) v).getText() + " ");
+                break;
+            case R.id.btn_del:
+                if (clear_flag){
+                    clear_flag = false;
+                    et_input.setText("");
+                }else if (!str.equals("")) {
+                    et_input.setText(str.substring(0, str.length() - 1));
+                }
+                break;
+            case R.id.btn_C:
+                clear_flag = true;
+                et_input.setText("");
+                break;
+            case R.id.btn_equal:
+                getResult();
             default:
                 break;
         }
     }
+
+    private void getResult(){
+        String exp;
+        exp = et_input.getText().toString();
+
+        if (exp.equals("")){
+            return;
+        }else if (!exp.contains(" ")){
+            return;
+        }
+
+        if (clear_flag){
+            et_input.setText("");
+        }
+
+        clear_flag = true;
+
+        String str1 = exp.substring(0, exp.indexOf(" "));
+        String op = exp.substring(exp.indexOf(" ") + 1, exp.indexOf(" ") + 2);
+        String str2 = exp.substring(exp.indexOf(" ") + 3);
+        double result = 0;
+
+        if (!str1.equals("") && !str2.equals("")){
+            double d1 = Double.parseDouble(str1);
+            double d2 = Double.parseDouble(str2);
+
+            if (op.equals("+")){
+                result = d1 + d2;
+            }else if (op.equals("-")){
+                result = d1 - d2;
+            }else if (op.equals("*")){
+                result = d1 * d2;
+            }else if (op.equals("/")){
+                if (d2 == 0){
+                    result = 0;
+                }else{
+                    result = d1 / d2;
+                }
+            }
+
+            if (!str1.contains(".") && !str2.contains(".") && !op.equals("/")){
+                int r = (int) result;
+                et_input.setText(r + "");
+            }else{
+                et_input.setText(result + "");
+            }
+        }else if (!str1.equals("") && str2.equals("")){
+            et_input.setText(exp);
+        }else if (str1.equals("") && !str2.equals("")){
+            double d2 = Double.parseDouble(str2);
+
+            if (op.equals("+")){
+                result = 0 + d2;
+            }else if (op.equals("-")){
+                result = 0 - d2;
+            }else if (op.equals("*")){
+                result = 0;
+            }else if (op.equals("/")){
+                result = 0;
+            }
+
+            if (!str2.contains(".")){
+                int r = (int) result;
+                et_input.setText(r + "");
+            }else{
+                et_input.setText(result + "");
+            }
+        }else if (str1.equals("") && !str2.equals("")){
+            et_input.setText("");
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
